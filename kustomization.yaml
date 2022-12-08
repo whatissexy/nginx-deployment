@@ -1,0 +1,5 @@
+secretGenerator:
+- name: database-creds
+  literals:
+  - username=admin
+  - password=password
