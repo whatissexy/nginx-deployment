@@ -6,10 +6,23 @@ metadata:
   labels:
     type: local
 spec:
-  storageClassName: ""
+  storageClassName: manual
   capacity:
     storage: 100Mi
   accessModes:
     - ReadWriteOnce
   hostPath:
     path: "/mnt/data"
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: stateful-pv-claim
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Mi
