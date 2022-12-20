@@ -1,5 +1,14 @@
 ---
 apiVersion: v1
+kind: Secret
+metadata:
+  name: mysql-statefulset-password
+type: opaque
+stringData:
+  MYSQL_ROOT_PASSWORD: password
+
+---
+apiVersion: v1
 kind: Service
 metadata:
   name: mysql
@@ -13,6 +22,32 @@ spec:
     app: mysql
 
 ---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: mysql-statefulset-sc
+provisioner: kubernetes.io/no-provisioner
+reclaimPolicy: Retain
+allowVolumeExpansion: true
+volumeBindingMode: Immediate
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mysql-stateful-pv
+  labels:
+    type: local
+spec:
+  storageClassName: mysql-statefulset-sc
+  capacity:
+    storage: 500Mi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data"
+
+---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -21,7 +56,7 @@ spec:
   selector:
     matchLabels:
       app: mysql
-  serviceName: "mysql"
+  serviceName: "mysql-statefulset-service"
   replicas: 3
   minReadySeconds: 10
   template:
@@ -33,6 +68,8 @@ spec:
       containers:
       - name: mysql
         image: mysql:latest
+        args:
+          - "--ignore-db-dir=lost+found"
         ports:
         - containerPort: 3306
         volumeMounts:
@@ -49,14 +86,14 @@ spec:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: mysql-password
+              name: mysql-statefulset-password
               key: MYSQL_ROOT_PASSWORD
   volumeClaimTemplates:
   - metadata:
       name: mysql-store
     spec:
       accessModes: [ "ReadWriteOnce" ]
-      storageClassName: "manual"
+      storageClassName: "mysql-statefulset-sc"
       resources:
         requests:
           storage: 100Mi
