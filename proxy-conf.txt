@@ -1,0 +1,5 @@
+/home/anvar/.bashrc
+/etc/apt/apt.conf
+/home/anvar/.docker/config.json
+/etc/systemd/system/docker.service.d/http-proxy.conf
+/etc/environment
