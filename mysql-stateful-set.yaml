@@ -29,7 +29,7 @@ metadata:
 provisioner: kubernetes.io/no-provisioner
 reclaimPolicy: Retain
 allowVolumeExpansion: true
-volumeBindingMode: Immediate
+volumeBindingMode: WaitForFirstConsumer
 
 ---
 apiVersion: v1
