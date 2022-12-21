@@ -41,7 +41,7 @@ metadata:
 spec:
   storageClassName: mysql-statefulset-sc
   capacity:
-    storage: 500Mi
+    storage: 1000Mi
   accessModes:
     - ReadWriteOnce
   hostPath:
@@ -68,8 +68,6 @@ spec:
       containers:
       - name: mysql
         image: mysql:latest
-        args:
-          - "--ignore-db-dir=lost+found"
         ports:
         - containerPort: 3306
         volumeMounts:
@@ -77,11 +75,11 @@ spec:
           mountPath: /var/lib/mysql
         resources:
           requests:
-            memory: "64Mi"
-            cpu: "250m"
+            memory: "512Mi"
+            cpu: "0.2"
           limits:
-            memory: "128Mi"
-            cpu: "500m"
+            memory: "768Mi"
+            cpu: "0.5"
         env:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
@@ -96,4 +94,4 @@ spec:
       storageClassName: "mysql-statefulset-sc"
       resources:
         requests:
-          storage: 100Mi
+          storage: 300Mi
