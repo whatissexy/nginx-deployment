@@ -127,3 +127,21 @@ spec:
       resources:
         requests:
           storage: 300Mi
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mysql-client
+  labels:
+    name: mysql-client
+spec:
+  containers:
+  - name: mysql-client
+    image: alpine:latest
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "0.5"
+    command: ['sh','-c', "sleep 1800m"]
+    imagePullPolicy: IfNotPresent
